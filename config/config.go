@@ -33,6 +33,10 @@ type R2Account struct {
 // Endpoint builds the S3-compatible endpoint host for this account, honoring
 // a data-residency jurisdiction if one is set (see docs/ARCHITECTURE.md §10).
 func (a R2Account) Endpoint() string {
+	// Self-hosting: any S3-compatible store (MinIO, Garage) instead of Cloudflare R2.
+	if e := os.Getenv("S3_ENDPOINT"); e != "" {
+		return e
+	}
 	if a.Jurisdiction != "" {
 		return fmt.Sprintf("%s.%s.r2.cloudflarestorage.com", a.AccountID, a.Jurisdiction)
 	}

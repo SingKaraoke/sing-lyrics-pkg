@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io"
 	"net/url"
+	"os"
 	"strings"
 	"time"
 
@@ -23,7 +24,7 @@ type R2Client struct {
 func NewR2Client(endpoint, accessKeyID, secretAccessKey, bucket string) (*R2Client, error) {
 	client, err := minio.New(endpoint, &minio.Options{
 		Creds:  credentials.NewStaticV4(accessKeyID, secretAccessKey, ""),
-		Secure: true,
+		Secure: os.Getenv("S3_INSECURE") != "true",
 	})
 	if err != nil {
 		return nil, err
